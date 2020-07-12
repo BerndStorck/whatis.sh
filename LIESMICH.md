@@ -6,7 +6,7 @@
 
 ## Voraussetzungen ##
 
-**Das Programm "column" muss installiert sein. **
+**Das Programm "column" muss installiert sein.**
 
 ## Gegenüberstellung ##
 
