@@ -6,7 +6,7 @@
 
 ## Voraussetzungen ##
 
-**Das Programm "column" muss installiert sein. **
+**Das Programm "column" muss installiert sein.**
 
 ## Gegenüberstellung ##
 
@@ -23,7 +23,7 @@ BStLinux@linux-sys: ~ $
 ```
 
 ### whatis.sh ###
-**Achtung:** "wahts" wurde als Alias für "'whatis.sh" angelegt. 
+**Achtung:** "whats" wurde als Alias für "'whatis.sh" angelegt. 
 
 ```bash
 BStLinux@linux-sys: ~ $ whats ls set schlumpf export grumpf%@X^z
@@ -44,7 +44,7 @@ Das Skript kann Parameter `-s` an whatis weitergeben, dazu muss er der erste Auf
 | ------------------- | ------------------ |
 | `whatis.sh -s 1 ls` | `whatis.sh -s1 ls` |
 
-**Achtung:** "wahts" wurde als Alias für "'whatis.sh" angelegt. 
+**Achtung:** "whats" wurde als Alias für "'whatis.sh" angelegt. 
 
 ```bash
 BStLinux@linux-sys: ~ $ whats -s1,8 cd exit ls useradd
