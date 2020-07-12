@@ -13,7 +13,7 @@
 #  Contact: https://www.facebook.com/BStLinux/
 
 PROGNAME="$(basename $0)"
-VERSION="1.0.0"
+VERSION="1.1.0"
 
 ### HANDLING OF PARAMETERS ###############
 case "$1" in
@@ -49,8 +49,8 @@ fi
 rm -rf /tmp/which.sh_err
 for i in "$@"
 do
-	# whatis $section $i 2>/dev/null
-	if ! whatis "$section" "$i" 2>/dev/null; then
+	whatis $section $i 2>/dev/null
+	if test -z "$section"; then
 		if help "$i" &> /dev/null; then
 			echo -ne "$i (buildin) -\c";
 			help "$i" | tail +2 | head -1
