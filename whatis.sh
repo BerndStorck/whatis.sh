@@ -80,7 +80,7 @@ function list_manual_sections() {
 if [ "$UI_LANG" == "Deutsch" ]; then
 
 echo -e " Die folgende Tabelle zeigt die Nummern der Abschnitte der
- Handbuchseiten und den Typ der dort zu finden‐ den Seiten.
+ Handbuchseiten und den Typ der dort zu findenden Seiten.
 
    1  Ausführbare Programme oder Shell-Befehle
    2  Systemaufrufe (Kernel-Funktionen)
