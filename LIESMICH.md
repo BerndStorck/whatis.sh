@@ -30,10 +30,11 @@ BStLinux@linux-sys: ~ $ whats ls set schlumpf export grumpf%@X^z
 ls (1)                 - Verzeichnisinhalte auflisten
 LS (6)                 - stellt Animationen für Benutzer, die versehentlich LS...
 set (3tcl)             - Read and write variables
+set (buildin)          - Set or unset values of shell options and positional parameters.
 export (buildin)       - Setzt das Attribut »export« für Shell-Variablen.
 schlumpf (unknown)     - Command not found / Kein passendes Kommando gefunden
 grumpf%@X^z (unknown)  - Command not found / Kein passendes Kommando gefunden
-BStLinux@linux-sys: ~ $  
+BStLinux@linux-sys: ~ $
 ```
 
 ## Weitere Leistungen ##

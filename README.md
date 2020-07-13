@@ -28,12 +28,13 @@ BStLinux@linux-sys: ~ $
 ```bash
 BStLinux@linux-sys: ~ $ whats ls set schlumpf export grumpf%@X^z
 ls (1)                 - list directory contents
-LS (6)                 - display animations aimed to correct users who accident...
+LS (6)                 - display animations aimed to correct users who acciden...
 set (3tcl)             - Read and write variables
+set (buildin)          - Set or unset values of shell options and positional parameters.
 export (buildin)       - Set export attribute for shell variables.
 schlumpf (unknown)     - Command not found / Kein passendes Kommando gefunden
 grumpf%@X^z (unknown)  - Command not found / Kein passendes Kommando gefunden
-BStLinux@linux-sys: ~ $  
+BStLinux@linux-sys: ~ $
 ```
 
 ## Further Features ##
