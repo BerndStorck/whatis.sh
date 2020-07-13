@@ -14,7 +14,7 @@
 
 PROGNAME="$(basename "$0")"
 TITLE="$PROGNAME"
-VERSION="1.2.0"
+VERSION="1.2.1"
 
 
 if [ "$(echo "$LANG" | cut -c 1-2)" == "de" ]; then
@@ -24,7 +24,7 @@ else
 fi
 
 
-function help() {
+function help_screen() {
 # Displays program purpose and usage help.
 
 echo -e "\e[1;33m$TITLE ($VERSION) \e[0m\n"
@@ -116,7 +116,7 @@ fi
 ### HANDLING OF PARAMETERS ###############
 case "$1" in
 	--help|-h|--hilf|--hilfe)
-		help "${1:2:4}"
+		help_screen "${1:2:4}"
 		exit
 		;;
 	--list|-l)
@@ -148,25 +148,24 @@ if [ "$section" = "-s" ]; then
 fi
 
 ### MAIN ########################
-rm -rf /tmp/which.sh_err
+rm -rf /tmp/whatis.sh_err
 for i in "$@"
 do
 	whatis "$section" "$i" 2>/dev/null
-	if test -z "$section"; then
-		if help "$i" &> /dev/null; then
-			echo -ne "$i (buildin) -\c";
-			help "$i" | tail +2 | head -1
-		else
-			echo -e "\e[0;31m$i (unknown) - Command not found / Kein passendes Kommando gefunden\e[0m" >> /tmp/which.sh_err
-		fi
+	hasManpage="$?"
+	if help "$i" &> /dev/null; then
+		echo -ne "$i (buildin) -\c"
+		help "$i" | tail +2 | head -1
+	elif [ "$hasManpage" != "0" ]; then
+		echo -e "\e[0;31m$i (unknown) - Command not found / Kein passendes Kommando gefunden\e[0m" >> /tmp/whatis.sh_err
 	fi
-done > /tmp/which.sh_results
+done > /tmp/whatis.sh_results
 
-if test -s /tmp/which.sh_err 2> /dev/null; then
-	cat /tmp/which.sh_err >> /tmp/which.sh_results && rm -rf /tmp/which.sh_err
+if test -s /tmp/whatis.sh_err 2> /dev/null; then
+	cat /tmp/whatis.sh_err >> /tmp/whatis.sh_results && rm -rf /tmp/whatis.sh_err
 fi
 
-sed -E 's:^(.*\))[[:blank:]]+\-[[:blank:]]+(.*)$:\1=- \2:' /tmp/which.sh_results |\
+sed -E 's:^(.*\))[[:blank:]]+\-[[:blank:]]+(.*)$:\1=- \2:' /tmp/whatis.sh_results |\
 column -s'=' -t
 
-rm -rf /tmp/which.sh_results
+rm -rf /tmp/whatis.sh_results
