@@ -8,13 +8,13 @@
 #  The script calls whatis and help to generate a whatis like output, it
 #  needs the program column.
 #
-#  Bernd Storck, 2020-07-13
+#  Bernd Storck, 2020-07-13, 2020-08-31, 2020-10-21
 #
 #  Contact: https://www.facebook.com/BStLinux/
 
-PROGNAME="$(basename "$0")"
+PROGNAME="${0##*/}"
 TITLE="$PROGNAME"
-VERSION="1.2.1"
+VERSION="1.2.4"
 
 
 if [ "$(echo "$LANG" | cut -c 1-2)" == "de" ]; then
@@ -36,7 +36,8 @@ echo -e "   ist ein Wrapper für den whatis-Befehl, er zeigt alle
    auch von externen Kommandos im Stile von whatis an.
 
 AUFRUFPARAMETER:
-   -s[1|2|…|7|8] 	Sucht Kommandos nur im Handbuchseitenabschnitt n.
+   -s1|2|…|7|8	 	Sucht Kommandos nur im Handbuchseitenabschnitt n.
+   -sn,m,… 		Sucht Kommandos nur der Abschnitte n, m usw.
    --list|-l 		Listet die Handbuchsektionen auf.
    --hilf 		Diese Hilfe anzeigen
    --version 		Zeigt die Programversion an.
@@ -57,10 +58,12 @@ echo -e "   is a wrapper of the command whatis, it generates a
    for bash buildin commands and for external programs.
 
 PARAMETERS:
-   -s[1|2|…|7|8] 	Looks only for commands from manual section n.
+   -s1|2|…|7|8	 	Looks only for commands from manual section n.
+   -sn,m,… 		Looks only for commands from manual sections n, m etc.
    --list|-l 		Lists the sections of the manual pages.
-   --help|-h| 		Show this help.
-   --version 		Print program version.
+   --help|-h 		Show this help.
+   --version|-V		Print program name and version.
+   -#|-v		Print versions number.
 
 EXAMPLES:
    \033[1;32mCall				Description\033[0m
@@ -125,6 +128,10 @@ case "$1" in
 		;;
 	--version|-V)
 		echo "$PROGNAME ($VERSION)"
+		exit
+		;;
+	-v|-\#) ## 2020-08-31
+		echo "$VERSION"
 		exit
 		;;
 esac
