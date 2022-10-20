@@ -6,19 +6,18 @@ whatis.sh is a wrapper for the whatis command which integrates information on ba
 
 ## Prerequisites ##
 
-**The program "column" is needed. If not present on your system, please install it!**
+**The program "column" is needed. If not present on your system, please install the package bsdmainutils!**
 
 ## Output Comparsion ##
 
 ### standard whatis ###
 ```bash
-BStLinux@linux-sys: ~ $ whatis ls set schlumpf export grumpf%@X^z
+BStLinux@linux-sys: ~ $ whatis ls set schlumpf gist export
 ls (1)               - list directory contents
-LS (6)               - display animations aimed to correct users who accident...
-set (3tcl)           - Read and write variables
+gist-paste (1)       - upload code to https://gist.github.com
+set: nothing appropriate.
 schlumpf: nothing appropriate.
 export: nothing appropriate.
-grumpf%@X^z: nothing appropriate.
 BStLinux@linux-sys: ~ $ 
 ```
 
@@ -26,14 +25,12 @@ BStLinux@linux-sys: ~ $
 **Attention:** "whats" was defined as alias for "whatis.sh".
 
 ```bash
-BStLinux@linux-sys: ~ $ whats ls set schlumpf export grumpf%@X^z
+BStLinux@linux-sys: ~ $ whats ls set schlumpf gist export
 ls (1)                 - list directory contents
-LS (6)                 - display animations aimed to correct users who acciden...
-set (3tcl)             - Read and write variables
 set (buildin)          - Set or unset values of shell options and positional parameters.
+gist (rubygem)         - Just allows you to upload gists
 export (buildin)       - Set export attribute for shell variables.
 schlumpf (unknown)     - Command not found / Kein passendes Kommando gefunden
-grumpf%@X^z (unknown)  - Command not found / Kein passendes Kommando gefunden
 BStLinux@linux-sys: ~ $
 ```
 
