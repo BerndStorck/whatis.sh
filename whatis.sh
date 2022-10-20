@@ -8,13 +8,13 @@
 #  The script calls whatis and help to generate a whatis like output, it
 #  needs the program column.
 #
-#  Bernd Storck, 2020-07-13, 2020-08-31, 2020-10-21
+#  Bernd Storck, 2020-07-13, 2020-08-31, 2020-10-21, 2022-10-19
 #
 #  Contact: https://www.facebook.com/BStLinux/
 
 PROGNAME="${0##*/}"
 TITLE="$PROGNAME"
-VERSION="1.2.4"
+VERSION="1.3.0"
 
 
 if [ "$(echo "$LANG" | cut -c 1-2)" == "de" ]; then
@@ -33,7 +33,8 @@ if [ "$1" = "hilf" ] || [ "$UI_LANG" == "Deutsch" ]; then
 
 echo -e "   ist ein Wrapper für den whatis-Befehl, er zeigt alle
    Kurzbeschreibungen sowohl von bash-eigenen Kommandos als
-   auch von externen Kommandos im Stile von whatis an.
+   auch von externen Kommandos inklusive installierter Ruby-Gems
+   im Stile von whatis an.
 
 AUFRUFPARAMETER:
    -s1|2|…|7|8	 	Sucht Kommandos nur im Handbuchseitenabschnitt n.
@@ -54,8 +55,9 @@ BEISPIELAUFRUFE:
 
 else  # English help:
 echo -e "   is a wrapper of the command whatis, it generates a
-   whatis like list of the short program descriptions for both
-   for bash buildin commands and for external programs.
+   whatis like list of the short program descriptions for 
+   for bash buildin commands and for external programs including
+   ruby gems.
 
 PARAMETERS:
    -s1|2|…|7|8	 	Looks only for commands from manual section n.
@@ -154,17 +156,33 @@ if [ "$section" = "-s" ]; then
 	section=''
 fi
 
+#echo "\"${@}\""
+#loopno=0
+
 ### MAIN ########################
 rm -rf /tmp/whatis.sh_err
 for i in "$@"
 do
-	whatis "$section" "$i" 2>/dev/null
-	hasManpage="$?"
-	if help "$i" &> /dev/null; then
+  # loopno="$(( loopno++ ))"
+  if [ -z "$section" ]; then
+	  whatis "$i" 2>/dev/null | grep -Es "^$i[^-\w]+"
+	  hasManpage="$?"
+  else
+	  whatis "$section" "$i" 2>/dev/null | grep -Es "^$i[^-\w]+"
+	  hasManpage="$?"
+  fi
+  if gem info "$i" 2> /dev/null | grep -s "$i" > /dev/null; then 
+		echo -ne "$i (rubygem) -\c"
+    gem info "$i" | tail -n 1
+	elif help "$i" &> /dev/null; then
 		echo -ne "$i (buildin) -\c"
 		help "$i" | tail +2 | head -1
 	elif [ "$hasManpage" != "0" ]; then
-		echo -e "\e[0;31m$i (unknown) - Command not found / Kein passendes Kommando gefunden\e[0m" >> /tmp/whatis.sh_err
+	  whatis "$section" "^$i" 2>/dev/null
+	  hasManpage="$?"
+    if  [ "$hasManpage" != "0" ]; then
+		  echo -e "\e[0;31m$i (unknown) - Command not found / Kein passendes Kommando gefunden\e[0m" >> /tmp/whatis.sh_err
+    fi
 	fi
 done > /tmp/whatis.sh_results
 
@@ -176,3 +194,5 @@ sed -E 's:^(.*\))[[:blank:]]+\-[[:blank:]]+(.*)$:\1=- \2:' /tmp/whatis.sh_result
 column -s'=' -t
 
 rm -rf /tmp/whatis.sh_results
+
+#echo "Last loop was: #${loopno}"
