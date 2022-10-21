@@ -12,22 +12,23 @@
 #
 #  Contact: https://www.facebook.com/BStLinux/
 
-PROGNAME="${0##*/}"
-TITLE="$PROGNAME"
-VERSION="1.3.0"
+ORIGINAL_PROG_NAME="Whatis_Wrapper"
+CURRENT_SCRIPT_NAME="${0##*/}"
+TITLE="$CURRENT_SCRIPT_NAME"
+PROG_VERSION="1.3.1"
 
-
-if [ "$(echo "$LANG" | cut -c 1-2)" == "de" ]; then
-	UI_LANG="Deutsch"
+if [ "${LANG::2}" == "de" ]; then
+  UI_LANG="Deutsch"
+  # PROG_TITLE="$CURRENT_SCRIPT_NAME -- Debian/Ubuntu Aktualisierungsprogramm (Version $PROG_VERSION)"
 else
-	UI_LANG="English"
+  UI_LANG="English"
 fi
 
 
 function help_screen() {
 # Displays program purpose and usage help.
 
-echo -e "\e[1;33m$TITLE ($VERSION) \e[0m\n"
+echo -e "\e[1;33m$TITLE ($PROG_VERSION) \e[0m\n"
 
 if [ "$1" = "hilf" ] || [ "$UI_LANG" == "Deutsch" ]; then
 
@@ -37,21 +38,21 @@ echo -e "   ist ein Wrapper für den whatis-Befehl, er zeigt alle
    im Stile von whatis an.
 
 AUFRUFPARAMETER:
-   -s1|2|…|7|8	 	Sucht Kommandos nur im Handbuchseitenabschnitt n.
-   -sn,m,… 		Sucht Kommandos nur der Abschnitte n, m usw.
-   --list|-l 		Listet die Handbuchsektionen auf.
-   --hilf 		Diese Hilfe anzeigen
-   --version 		Zeigt die Programversion an.
+   -s1|2|…|7|8          Sucht Kommandos nur im Handbuchseitenabschnitt n.
+   -sn,m,…              Sucht Kommandos nur der Abschnitte n, m usw.
+   --list|-l            Listet die Handbuchsektionen auf.
+   --hilf               Diese Hilfe anzeigen
+   --version            Zeigt die Programversion an.
 
 BEISPIELAUFRUFE:
-   \033[1;32mAufruf			Beschreibung\033[0m
+   \033[1;32mAufruf                       Beschreibung\033[0m
 
-   $PROGNAME ls type		Kurzbeschreibung des Programms ls und
-   				des Kommandos type anzeigen.
+   $CURRENT_SCRIPT_NAME ls type            Kurzbeschreibung des Programms ls und
+                                des Kommandos type anzeigen.
 
-   $PROGNAME -s1,8 <commands>	Zeigt für nicht in die Bash eingebaute Befehle
-   				nur Informationen aus den Sektionen 1 und 8 der
-   				Handbuchseiten an."
+   $CURRENT_SCRIPT_NAME -s1,8 <commands>   Zeigt für nicht in die Bash eingebaute Befehle
+                                nur Informationen aus den Sektionen 1 und 8 der
+                                Handbuchseiten an."
 
 else  # English help:
 echo -e "   is a wrapper of the command whatis, it generates a
@@ -60,21 +61,21 @@ echo -e "   is a wrapper of the command whatis, it generates a
    ruby gems.
 
 PARAMETERS:
-   -s1|2|…|7|8	 	Looks only for commands from manual section n.
-   -sn,m,… 		Looks only for commands from manual sections n, m etc.
-   --list|-l 		Lists the sections of the manual pages.
-   --help|-h 		Show this help.
-   --version|-V		Print program name and version.
-   -#|-v		Print versions number.
+   -s1|2|…|7|8          Looks only for commands from manual section n.
+   -sn,m,…              Looks only for commands from manual sections n, m etc.
+   --list|-l            Lists the sections of the manual pages.
+   --help|-h            Show this help.
+   --version|-V         Print program name and version.
+   -#|-v                Print versions number.
 
 EXAMPLES:
-   \033[1;32mCall				Description\033[0m
+   \033[1;32mCall                         Description\033[0m
 
-   $PROGNAME ls type		Shows a short description of the program ls and
-   				then command type.
+   $CURRENT_SCRIPT_NAME ls type            Shows a short description of the program ls and
+                                then command type.
 
-   $PROGNAME -s1,8 <commands>	Shows for not bash buildin commands only information
-   				from the manual page sections 1 und 8."
+   $CURRENT_SCRIPT_NAME -s1,8 <commands>   Shows for not bash buildin commands only information
+                                from the manual page sections 1 und 8."
 fi
 }
 
@@ -120,27 +121,31 @@ fi
 
 ### HANDLING OF PARAMETERS ###############
 case "$1" in
-	--help|-h|--hilf|--hilfe)
-		help_screen "${1:2:4}"
-		exit
-		;;
-	--list|-l)
-		list_manual_sections
-		exit
-		;;
-	--version|-V)
-		echo "$PROGNAME ($VERSION)"
-		exit
-		;;
-	-v|-\#) ## 2020-08-31
-		echo "$VERSION"
-		exit
-		;;
+  --help|-h|--hilf|--hilfe)
+    help_screen "${1:2:4}"
+    exit
+    ;;
+  --list|-l)
+    list_manual_sections
+    exit
+    ;;
+  --version|-V)
+    echo -n "$CURRENT_SCRIPT_NAME ("
+    if [ "$CURRENT_SCRIPT_NAME" != "$ORIGINAL_PROG_NAME" ]; then
+      echo -n "$ORIGINAL_PROG_NAME "
+    fi
+    echo "$PROG_VERSION)"
+    exit
+    ;;
+  -v|-\#) ## 2020-08-31
+    echo "$PROG_VERSION"
+    exit
+    ;;
 esac
 
 if [ "${1:0:2}" = '-s' ]; then
-	section="$1"
-	shift
+  section="$1"
+  shift
 fi
 
 # Remove numbers greater than 9, which are not used as section numbers:
@@ -153,43 +158,45 @@ section="$(sed -E 's:^-s,:-s:' <<< "$section")"
 section="$(sed -E 's:,$::' <<< "$section")"
 # If all option values have been invalid, then delete section variable:
 if [ "$section" = "-s" ]; then
-	section=''
+  section=''
 fi
 
 #echo "\"${@}\""
 #loopno=0
 
 ### MAIN ########################
-rm -rf /tmp/whatis.sh_err
+rm -rf /tmp/whatis.sh_results /tmp/whatis.sh_err
 for i in "$@"
 do
   # loopno="$(( loopno++ ))"
   if [ -z "$section" ]; then
-	  whatis "$i" 2>/dev/null | grep -Es "^$i[^-\w]+"
-	  hasManpage="$?"
+    whatis "$i" 2>/dev/null | grep -Es "^$i[^-\w]+"
+    hasManpage="$?"
   else
-	  whatis "$section" "$i" 2>/dev/null | grep -Es "^$i[^-\w]+"
-	  hasManpage="$?"
+    whatis "$section" "$i" 2>/dev/null | grep -Es "^$i[^-\w]+"
+    hasManpage="$?"
   fi
   if gem info "$i" 2> /dev/null | grep -s "$i" > /dev/null; then 
-		echo -ne "$i (rubygem) -\c"
+    echo -ne "$i (rubygem) -\c"
     gem info "$i" | tail -n 1
-	elif help "$i" &> /dev/null; then
-		echo -ne "$i (buildin) -\c"
-		help "$i" | tail +2 | head -1
-	elif [ "$hasManpage" != "0" ]; then
-	  whatis "$section" "^$i" 2>/dev/null
-	  hasManpage="$?"
+  elif help "$i" &> /dev/null; then
+    echo -ne "$i (buildin) -\c"
+    help "$i" | sed -n '2p'
+    # help "$i" | tail +2 | head -1
+  elif [ "$hasManpage" != "0" ]; then
+    whatis "$section" "^$i" 2>/dev/null
+    hasManpage="$?"
     if  [ "$hasManpage" != "0" ]; then
-		  echo -e "\e[0;31m$i (unknown) - Command not found / Kein passendes Kommando gefunden\e[0m" >> /tmp/whatis.sh_err
+      echo -e "\e[0;31m$i (unknown) - Command not found / Kein passendes Kommando gefunden\e[0m" >> /tmp/whatis.sh_err
     fi
-	fi
+  fi
 done > /tmp/whatis.sh_results
 
 if test -s /tmp/whatis.sh_err 2> /dev/null; then
-	cat /tmp/whatis.sh_err >> /tmp/whatis.sh_results && rm -rf /tmp/whatis.sh_err
+  cat /tmp/whatis.sh_err >> /tmp/whatis.sh_results && rm -rf /tmp/whatis.sh_err
 fi
 
+### Write result to standard output: ################################
 sed -E 's:^(.*\))[[:blank:]]+\-[[:blank:]]+(.*)$:\1=- \2:' /tmp/whatis.sh_results |\
 column -s'=' -t
 
